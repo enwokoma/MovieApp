@@ -29,12 +29,10 @@ class MainActivity : AppCompatActivity() {
         moviesAdapter = MoviesAdapter(emptyList())
         moviesRecyclerView.adapter = moviesAdapter
 
-        moviesViewModel = ViewModelProvider(this)[MoviesViewModel::class.java]
-        moviesViewModel.movies.observe(this) { movies ->
+        moviesViewModel = ViewModelProvider(this).get(MoviesViewModel::class.java)
+        moviesViewModel.movies.observe(this, { movies ->
             moviesAdapter = MoviesAdapter(movies)
             moviesRecyclerView.adapter = moviesAdapter
-        }
-
-        moviesViewModel.fetchMovies()
+        })
     }
 }
