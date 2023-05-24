@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">MovieApp</string>
     <string name="apiKey">cec59543e562310263b41217d7173b6e</string>
+
+    <string name="popular">Popular Movies</string>
+    <string name="most_popular_movies">Endless scroll of popular movies</string>
+    <string name="error_fetch_movies">Please, kindly check your internet connection</string>
 </resources>

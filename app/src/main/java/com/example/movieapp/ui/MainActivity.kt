@@ -1,13 +1,14 @@
 package com.example.movieapp.ui
 
+import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.movieapp.R
-import com.example.movieapp.viewmodel.MoviesViewModel
+import com.example.movieapp.data.MoviesRepository
+import com.example.movieapp.model.Movie
 
 /**
  * Created by Emmanuel Nwokoma (Gigabyte) on 5/24/2023
@@ -16,23 +17,71 @@ import com.example.movieapp.viewmodel.MoviesViewModel
 private const val BASE_URL = "https://api.themoviedb.org/3/"
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var moviesRecyclerView: RecyclerView
-    private lateinit var moviesAdapter: MoviesAdapter
-    private lateinit var moviesViewModel: MoviesViewModel
+    private lateinit var popularMovies: RecyclerView
+    private lateinit var popularMoviesAdapter: MoviesAdapter
+    private lateinit var popularMoviesLayoutMgr: LinearLayoutManager
+
+    private var popularMoviesPage = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        moviesRecyclerView = findViewById(R.id.moviesRecyclerView)
-        moviesRecyclerView.layoutManager = LinearLayoutManager(this)
-        moviesAdapter = MoviesAdapter(emptyList())
-        moviesRecyclerView.adapter = moviesAdapter
+        popularMovies = findViewById(R.id.popular_movies)
+        popularMoviesLayoutMgr = LinearLayoutManager(
+            this,
+            LinearLayoutManager.HORIZONTAL,
+            false
+        )
+        popularMovies.layoutManager = popularMoviesLayoutMgr
+        popularMovies.hasFixedSize()
+        popularMoviesAdapter = MoviesAdapter(mutableListOf()) { movie -> showMovieDetails(movie) }
+        popularMovies.adapter = popularMoviesAdapter
 
-        moviesViewModel = ViewModelProvider(this).get(MoviesViewModel::class.java)
-        moviesViewModel.movies.observe(this, { movies ->
-            moviesAdapter = MoviesAdapter(movies)
-            moviesRecyclerView.adapter = moviesAdapter
+        getPopularMovies()
+    }
+
+    private fun getPopularMovies() {
+        MoviesRepository.getPopularMovies(
+            popularMoviesPage,
+            ::onPopularMoviesFetched,
+            ::onError
+        )
+    }
+
+    private fun onPopularMoviesFetched(movies: List<Movie>) {
+        popularMoviesAdapter.appendMovies(movies)
+        attachPopularMoviesOnScrollListener()
+    }
+
+    private fun attachPopularMoviesOnScrollListener() {
+        popularMovies.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                val totalItemCount = popularMoviesLayoutMgr.itemCount
+                val visibleItemCount = popularMoviesLayoutMgr.childCount
+                val firstVisibleItem = popularMoviesLayoutMgr.findFirstVisibleItemPosition()
+
+                if (firstVisibleItem + visibleItemCount >= totalItemCount / 2) {
+                    popularMovies.removeOnScrollListener(this)
+                    popularMoviesPage++
+                    getPopularMovies()
+                }
+            }
         })
+    }
+
+    private fun showMovieDetails(movie: Movie) {
+        val intent = Intent(this, MovieDetailsActivity::class.java)
+        intent.putExtra(MOVIE_BACKDROP, movie.backdropPath)
+        intent.putExtra(MOVIE_POSTER, movie.posterPath)
+        intent.putExtra(MOVIE_TITLE, movie.title)
+        intent.putExtra(MOVIE_RATING, movie.rating)
+        intent.putExtra(MOVIE_RELEASE_DATE, movie.releaseDate)
+        intent.putExtra(MOVIE_OVERVIEW, movie.overview)
+        startActivity(intent)
+    }
+
+    private fun onError() {
+        Toast.makeText(this, getString(R.string.error_fetch_movies), Toast.LENGTH_SHORT).show()
     }
 }
