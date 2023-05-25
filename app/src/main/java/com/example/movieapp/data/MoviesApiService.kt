@@ -15,4 +15,3 @@ interface MoviesApiService {
         @Query("page") page: Int
     ): Call<MoviesApiResponse>
 }
-

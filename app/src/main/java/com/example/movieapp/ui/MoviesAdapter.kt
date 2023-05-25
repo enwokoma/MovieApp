@@ -1,5 +1,6 @@
 package com.example.movieapp.ui
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +10,10 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.example.movieapp.R
 import com.example.movieapp.model.Movie
+
+/**
+ * Created by Emmanuel Nwokoma (Gigabyte) on 5/24/2023
+ **/
 
 class MoviesAdapter(
     private var movies: MutableList<Movie>,
@@ -28,12 +33,14 @@ class MoviesAdapter(
         holder.bind(movies[position])
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun appendMovies(movies: List<Movie>) {
         this.movies.addAll(movies)
         notifyItemRangeInserted(
             this.movies.size,
             movies.size - 1
         )
+        notifyItemInserted(this.movies.size - 1)
         notifyDataSetChanged()
     }
 
