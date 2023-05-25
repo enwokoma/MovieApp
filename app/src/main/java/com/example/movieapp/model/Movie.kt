@@ -6,6 +6,7 @@ import com.google.gson.annotations.SerializedName
  * Created by Emmanuel Nwokoma (Gigabyte) on 5/24/2023
  **/
 
+// Represents a standalone movie object
 data class Movie(
     @SerializedName("id") val id: Long,
     @SerializedName("title") val title: String,
@@ -15,4 +16,3 @@ data class Movie(
     @SerializedName("vote_average") val rating: Float,
     @SerializedName("release_date") val releaseDate: String
 )
-

@@ -8,10 +8,13 @@ import retrofit2.http.Query
  * Created by Emmanuel Nwokoma (Gigabyte) on 5/24/2023
  **/
 
+// Retrofit service interface for movie API requests
 interface MoviesApiService {
+
+    // Defines the GET request for fetching popular movies
     @GET("movie/popular")
     fun getPopularMovies(
-        @Query("api_key") apiKey: String = "c9c5ea53799624204822e99e30c87b54",
+        @Query("api_key") apiKey: String = "cec59543e562310263b41217d7173b6e",
         @Query("page") page: Int
     ): Call<MoviesApiResponse>
 }

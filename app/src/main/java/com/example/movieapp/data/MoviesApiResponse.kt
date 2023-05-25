@@ -6,6 +6,8 @@ import com.google.gson.annotations.SerializedName
 /**
  * Created by Emmanuel Nwokoma (Gigabyte) on 5/24/2023
  **/
+
+// Represents the response from the movies API
 data class MoviesApiResponse(
     @SerializedName("page") val page: Int,
     @SerializedName("results") val movies: List<Movie>,
