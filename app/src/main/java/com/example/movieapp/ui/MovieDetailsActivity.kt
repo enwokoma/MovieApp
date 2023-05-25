@@ -1,6 +1,8 @@
 package com.example.movieapp.ui
 
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.ImageView
 import android.widget.RatingBar
 import android.widget.TextView
@@ -8,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.example.movieapp.R
+
 
 /**
  * Created by Emmanuel Nwokoma (Gigabyte) on 5/25/2023
@@ -36,6 +39,9 @@ class MovieDetailsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_movie_details)
 
+        // Calling the action bar and showing the back button in action bar
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
         // Initialize the views
         backdrop = findViewById(R.id.movie_backdrop)
         poster = findViewById(R.id.movie_poster)
@@ -53,6 +59,21 @@ class MovieDetailsActivity : AppCompatActivity() {
         } else {
             finish() // Finish the activity if no extras are provided
         }
+    }
+
+    // This event will enable the back function to the button on press
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                finish()
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        return true
     }
 
     // Populates the movie details using the provided extras
